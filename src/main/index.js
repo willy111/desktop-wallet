@@ -1,6 +1,7 @@
 'use strict'
 
 import { app, BrowserWindow, screen } from 'electron'
+import updater from './updater'
 import winState from 'electron-window-state'
 
 // It is necessary to require `electron-log` here to use it on the renderer process
@@ -60,10 +61,18 @@ function broadcastURL (url) {
     return
   }
 
-  if (mainWindow && mainWindow.webContents) {
-    mainWindow.webContents.send('process-url', url)
+  if (sendToWindow()) {
     deeplinkingUrl = null
   }
+}
+
+function sendToWindow (key, value) {
+  if (mainWindow && mainWindow.webContents) {
+    mainWindow.webContents.send(key, value)
+    return true
+  }
+
+  return false
 }
 
 // Force Single Instance Application
@@ -100,7 +109,10 @@ if (!gotTheLock) {
   }
 }
 
-app.on('ready', createWindow)
+app.on('ready', () => {
+  createWindow()
+  updater({ sendToWindow })
+})
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
@@ -122,23 +134,3 @@ app.on('open-url', (event, url) => {
 })
 
 app.setAsDefaultProtocolClient('ark', process.execPath, ['--'])
-
-/**
- * Auto Updater
- *
- * Uncomment the following code below and install `electron-updater` to
- * support auto updating. Code Signing with a valid certificate is required.
- * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-electron-builder.html#auto-updating
- */
-
-/*
-import { autoUpdater } from 'electron-updater'
-
-autoUpdater.on('update-downloaded', () => {
-  autoUpdater.quitAndInstall()
-})
-
-app.on('ready', () => {
-  if (process.env.NODE_ENV === 'production') autoUpdater.checkForUpdates()
-})
- */

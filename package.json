@@ -4,7 +4,7 @@
   "version": "2.1.1",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ArkEcosystem/desktop-wallet.git"
+    "url": "https://github.com/ArkEcosystem/desktop-wallet"
   },
   "author": "ArkEcosystem <info@ark.io>",
   "contributors": [
@@ -64,6 +64,7 @@
     "cycled": "^1.0.0",
     "dayjs": "^1.7.7",
     "electron-log": "^2.2.17",
+    "electron-updater": "^4.0.6",
     "electron-window-state": "^5.0.3",
     "emittery": "^0.4.1",
     "jsonschema": "^1.2.4",
@@ -160,7 +161,10 @@
   "build": {
     "productName": "Ark Desktop Wallet",
     "appId": "io.ark.desktop-wallet",
-    "compression": "maximum",
+    "publish": [
+      "github"
+    ],
+    "artifactName": "${name}-${os}-${arch}-${version}.${ext}",
     "protocols": {
       "name": "Ark URI scheme",
       "schemes": [
@@ -184,7 +188,6 @@
     },
     "linux": {
       "category": "Utility",
-      "executableName": "ark-desktop-wallet",
       "icon": "build/icons",
       "target": [
         "AppImage",
@@ -208,11 +211,6 @@
     },
     "dmg": {
       "icon": "build/icons/icon.icns"
-    },
-    "nsis": {
-      "perMachine": true,
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true
     }
   },
   "husky": {
